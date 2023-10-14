@@ -1,33 +1,52 @@
-#include <Servo.h>
+// pin declaration
+const int triggerPin = 6;
+const int reloadPin = 7;
+const int laser = 12;
 
-Servo myservo;  // create servo object to control a servo
-
-int pos = 0;    // variable to store the servo position
-const int irPin = 4;
+int triggerCount = 0;
+const int triggerLimit = 5;
 
 void setup() {
-  myservo.attach(9);  // attaches the servo on pin 9 to the servo object
-  pinMode(irPin, INPUT);
+  // put your setup code here, to run once:
+  pinMode(triggerPin, INPUT);
+  pinMode(reloadPin, INPUT);
+  pinMode(laser, OUTPUT);
+
+  digitalWrite(laser, LOW);
+
   Serial.begin(9600);
 }
 
 void loop() {
-  // for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-  //   // in steps of 1 degree
-  //   myservo.write(pos);              // tell servo to go to position in variable 'pos'
-  //   delay(15);                       // waits 15ms for the servo to reach the position
-  // }
-  // for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-  //   myservo.write(pos);              // tell servo to go to position in variable 'pos'
-  //   delay(15);                       // waits 15ms for the servo to reach the position
-  // }
-  int irVal = digitalRead(irPin);
-  Serial.println(irVal);
-  if(!irVal){
-    delay(500);
-    myservo.write(150);
+  
+  int triggerVal = digitalRead(triggerPin);
+  int reloadVal = digitalRead(reloadPin);
+  
+  if(triggerVal == 1 && triggerCount< triggerLimit){
+    Serial.println(triggerVal);
+    
+    digitalWrite(laser, HIGH);
+    triggerCount++;
+    delay(250);
   }
   else{
-    myservo.write(90);
+    digitalWrite(laser, LOW);
   }
+
+  if(reloadVal == 1){
+    delay(250);
+    triggerCount = 0;
+  }
+  
+//  digitalWrite(laser, HIGH);
+//  delay(250);
+//  digitalWrite(laser, LOW);
+//  delay(250);
 }
+
+
+
+
+//returnType functionName (set of parameters){
+//  Block of code
+//}
